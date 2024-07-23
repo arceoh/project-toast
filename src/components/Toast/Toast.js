@@ -18,31 +18,45 @@ const ICONS_BY_VARIANT = {
   error: AlertOctagon,
 };
 
-function Toast({
-  isToastVisible,
-  setIsToastVisible,
-  toastMessage,
-  setToastMessage,
-  toastVariant,
-  setToastVariant,
-}) {
-  const Icon = ICONS_BY_VARIANT[toastVariant];
+function Toast({ toast, children, handleRemoveToast }) {
 
-  const handleDismissToast = () => {
-    setToastMessage("");
-    setToastVariant("notice");
-    setIsToastVisible(false);
+  const variant = toast.variant;
+  const id = toast.id;
+
+  const Icon = ICONS_BY_VARIANT[variant];
+
+  const timerRef = React.useRef(null);
+
+  const startTimer = () => {
+    timerRef.current = setTimeout(() => {
+      handleRemoveToast(id);
+    }, 3000);
   };
 
-  if (!isToastVisible) return;
+  React.useEffect(() => {
+    startTimer();
+
+    return () => {
+      clearTimeout(timerRef.current);
+    };
+  }, []);
+
+  const handleMouseEnter = () => {
+    clearTimeout(timerRef.current);
+  };
+
+  const handleMouseLeave = () => {
+    startTimer();
+  };
 
   return (
-    <div className={`${styles.toast} ${styles[toastVariant]}`}>
+
+    <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} className={`${styles.toast} ${styles[variant]}`}>
       <div className={styles.iconContainer}>
         <Icon size={24} />
       </div>
-      <p className={styles.content}>{toastMessage}</p>
-      <button className={styles.closeButton} onClick={handleDismissToast}>
+      <p className={styles.content}>{children}</p>
+      <button className={styles.closeButton} onClick={() => { handleRemoveToast(id) }}>
         <X size={24} />
         <VisuallyHidden>Dismiss message</VisuallyHidden>
       </button>

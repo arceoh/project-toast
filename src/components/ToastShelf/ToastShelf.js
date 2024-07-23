@@ -7,6 +7,21 @@ import { ToastListContext } from "../ToastPlayground/ToastPlayground";
 function ToastShelf() {
   const { toastList, setToastList } = React.useContext(ToastListContext)
 
+  React.useEffect(() => {
+
+    const dismissAllToast = (e) => {
+      if (e.key != "Escape") return;
+      setToastList([])
+    }
+
+    window.addEventListener("keyup", dismissAllToast)
+
+
+    return () => {
+      window.removeEventListener("keyup", dismissAllToast)
+    }
+
+  }, [])
 
   const handleRemoveToast = React.useCallback((id) => {
     if (!id) return;
@@ -15,9 +30,11 @@ function ToastShelf() {
     );
   }, []);
 
-  return (<ol className={styles.wrapper}> {toastList.map(toast => {
-    return <Toast handleRemoveToast={handleRemoveToast} key={toast.id} toast={toast}>{toast.message}</Toast>
-  })}</ol>
+  return (<ol className={styles.wrapper}>
+    {toastList.map(toast => {
+      return <Toast handleRemoveToast={handleRemoveToast} key={toast.id} toast={toast}>{toast.message}</Toast>
+    })}
+  </ol>
 
 
   )

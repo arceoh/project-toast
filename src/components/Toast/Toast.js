@@ -30,7 +30,7 @@ function Toast({ toast, children, handleRemoveToast }) {
   const startTimer = () => {
     timerRef.current = setTimeout(() => {
       handleRemoveToast(id);
-    }, 3000);
+    }, 5000);
   };
 
   React.useEffect(() => {

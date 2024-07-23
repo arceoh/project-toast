@@ -19,7 +19,6 @@ const ICONS_BY_VARIANT = {
 };
 
 function Toast({ toast, children, handleRemoveToast }) {
-
   const variant = toast.variant;
   const id = toast.id;
 
@@ -50,15 +49,27 @@ function Toast({ toast, children, handleRemoveToast }) {
   };
 
   return (
-
-    <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} className={`${styles.toast} ${styles[variant]}`}>
+    <div
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      className={`${styles.toast} ${styles[variant]}`}
+    >
       <div className={styles.iconContainer}>
         <Icon size={24} />
       </div>
-      <p className={styles.content}>{children}</p>
-      <button className={styles.closeButton} onClick={() => { handleRemoveToast(id) }}>
+      <p className={styles.content}>
+        {variant === "error" && <VisuallyHidden>error -</VisuallyHidden>}
+        {children}
+      </p>
+      <button
+        className={styles.closeButton}
+        onClick={() => {
+          handleRemoveToast(id);
+        }}
+        aria-label="Dismiss message"
+        aria-live="off"
+      >
         <X size={24} />
-        <VisuallyHidden>Dismiss message</VisuallyHidden>
       </button>
     </div>
   );
